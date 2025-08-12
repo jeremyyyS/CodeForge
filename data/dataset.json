@@ -15,6 +15,185 @@
     "unoptimized_code": "# Extremely inefficient duplicate finder in Python\n\n# Step 1: Take user input as a string\nuser_input = input(\"Enter numbers separated by spaces: \")\n\n# Step 2: Convert to list manually without split/list comprehension\nnumbers_str = []\ntemp = \"\"\nfor i in range(0, len(user_input)):\n    char = user_input[i:i+1]\n    if char != \" \":\n        temp = temp + char  # build number string char by char\n    else:\n        if temp != \"\":\n            numbers_str.append(temp)  # store completed number\n            temp = \"\"\nif temp != \"\":\n    numbers_str.append(temp)  # add last number\n\n# Step 3: Convert each to int manually (again, inefficient)\nnumbers = []\nfor i in range(0, len(numbers_str)):\n    num_as_string = numbers_str[i]\n    number_value = 0\n    is_negative = False\n    index = 0\n    if num_as_string[0:1] == \"-\":\n        is_negative = True\n        index = 1\n    while index < len(num_as_string):\n        digit_char = num_as_string[index:index+1]\n        digit_value = ord(digit_char) - ord('0')\n        number_value = number_value * 10 + digit_value\n        index = index + 1\n    if is_negative:\n        number_value = -number_value\n    numbers.append(number_value)\n\n# Step 4: Inefficient duplicate detection using nested loops\nduplicates = []\nfor i in range(0, len(numbers)):\n    count = 0\n    for j in range(0, len(numbers)):\n        # Compare numbers manually\n        if numbers[i] == numbers[j]:\n            count = count + 1\n    # If duplicate found and not already added (slow check)\n    already_present = False\n    for k in range(0, len(duplicates)):\n        if numbers[i] == duplicates[k]:\n            already_present = True\n    if count > 1 and not already_present:\n        duplicates.append(numbers[i])\n\n# Step 5: Print results in a deliberately verbose way\nprint(\"Duplicates found are: \", end=\"\")\nfor i in range(0, len(duplicates)):\n    print(duplicates[i], end=\"\")\n    if i != len(duplicates) - 1:\n        print(\", \", end=\"\")\nprint()",
     "optimized_code": "# Optimized duplicate finder in Python\n\n# Step 1: Take user input and split into integers\nnumbers = list(map(int, input(\"Enter numbers separated by spaces: \").split()))\n\n# Step 2: Detect duplicates efficiently using a set\nseen = set()\nduplicates = set()\n\nfor num in numbers:\n    if num in seen:\n        duplicates.add(num)\n    else:\n        seen.add(num)\n\n# Step 3: Print results\nprint(\"Duplicates found are:\", \", \".join(map(str, duplicates)))"
     }
+
+    {
+    "problem": "Find maximum word length in a sentence",
+    "unoptimized": "sentence = input(\"Enter a sentence: \")\nwords = sentence.split()\nmax_len = 0\nfor word in words:\n    if len(word) > max_len:\n        max_len = len(word)\nprint(max_len)",
+    "optimized": "sentence = input(\"Enter a sentence: \")\nprint(max(len(word) for word in sentence.split()))"
+  },
+  {
+    "problem": "Sum of even numbers in list (no input)",
+    "unoptimized": "data_list = [4, 9, 12, 33, 18, 21]\ntotal_even = 0\nfor number in data_list:\n    if number % 2 == 0:\n        total_even += number\nprint(total_even)",
+    "optimized": "data_list = [4, 9, 12, 33, 18, 21]\nprint(sum(num for num in data_list if num % 2 == 0))"
+  },
+  {
+    "problem": "Check if a string is a palindrome (user input)",
+    "unoptimized": "word = input(\"Enter a string: \")\nreversed_word = \"\"\nfor i in range(len(word)-1, -1, -1):\n    reversed_word += word[i]\nif word == reversed_word:\n    print(\"Palindrome\")\nelse:\n    print(\"Not a palindrome\")",
+    "optimized": "word = input(\"Enter a string: \")\nprint(\"Palindrome\" if word == word[::-1] else \"Not a palindrome\")"
+  },
+  {
+    "problem": "Count prime numbers below a limit (no input, multi-step)",
+    "unoptimized": "def is_prime(k):\n    if k < 2:\n        return False\n    for factor in range(2, int(k ** 0.5) + 1):\n        if k % factor == 0:\n            return False\n    return True\n\ndef count_primes_below(limit):\n    count = 0\n    for number in range(2, limit):\n        if is_prime(number):\n            count += 1\n    return count\n\nprint(count_primes_below(5000))",
+    "optimized": "def count_primes_below(limit):\n    sieve = [True] * limit\n    sieve[0:2] = [False, False]\n    for i in range(2, int(limit ** 0.5) + 1):\n        if sieve[i]:\n            sieve[i*i:limit:i] = [False] * len(range(i*i, limit, i))\n    return sum(sieve)\n\nprint(count_primes_below(5000))"
+  },
+  {
+    "problem": "Merge two sorted lists (user input)",
+    "unoptimized": "list_a = list(map(int, input(\"Enter first sorted list: \").split()))\nlist_b = list(map(int, input(\"Enter second sorted list: \").split()))\nmerged = []\ni = j = 0\nwhile i < len(list_a) and j < len(list_b):\n    if list_a[i] < list_b[j]:\n        merged.append(list_a[i])\n        i += 1\n    else:\n        merged.append(list_b[j])\n        j += 1\nmerged.extend(list_a[i:])\nmerged.extend(list_b[j:])\nprint(merged)",
+    "optimized": "from heapq import merge\nlist_a = list(map(int, input(\"Enter first sorted list: \").split()))\nlist_b = list(map(int, input(\"Enter second sorted list: \").split()))\nprint(list(merge(list_a, list_b)))"
+  },
+  {
+    "problem": "Remove duplicates while preserving order (no input)",
+    "unoptimized": "names = [\"Alice\", \"Bob\", \"Alice\", \"Eve\", \"Bob\"]\nunique_names = []\nfor nm in names:\n    if nm not in unique_names:\n        unique_names.append(nm)\nprint(unique_names)",
+    "optimized": "names = [\"Alice\", \"Bob\", \"Alice\", \"Eve\", \"Bob\"]\nseen = set()\nprint([x for x in names if not (x in seen or seen.add(x))])"
+  },
+  {
+    "problem": "Convert Celsius to Fahrenheit for a list (user input)",
+    "unoptimized": "temps_c = list(map(float, input(\"Enter Celsius values: \").split()))\nconverted = []\nfor c in temps_c:\n    converted.append((c * 9/5) + 32)\nprint(converted)",
+    "optimized": "temps_c = list(map(float, input(\"Enter Celsius values: \").split()))\nprint([(c * 9/5) + 32 for c in temps_c])"
+  },
+  {
+    "problem": "Find the most frequent word (no input, larger function)",
+    "unoptimized": "text_block = \"the cat sat on the mat and the cat played with the hat\"\nword_counts = {}\nfor w in text_block.split():\n    if w in word_counts:\n        word_counts[w] += 1\n    else:\n        word_counts[w] = 1\nmax_count = 0\nmost_word = None\nfor word, count in word_counts.items():\n    if count > max_count:\n        max_count = count\n        most_word = word\nprint(most_word)",
+    "optimized": "from collections import Counter\ntext_block = \"the cat sat on the mat and the cat played with the hat\"\nprint(Counter(text_block.split()).most_common(1)[0][0])"
+  },
+  {
+    "problem": "Filter students with score above 75 (user input)",
+    "unoptimized": "students = input(\"Enter name-score pairs: \").split()\nhigh_scorers = []\nfor entry in students:\n    name, score = entry.split('-')\n    if int(score) > 75:\n        high_scorers.append(name)\nprint(high_scorers)",
+    "optimized": "students = input(\"Enter name-score pairs: \").split()\nprint([name for name, score in (s.split('-') for s in students) if int(score) > 75])"
+  },
+  {
+    "problem": "Count vowels in a file (multi-step, file I/O)",
+    "unoptimized": "def read_file(path):\n    with open(path, 'r') as f:\n        return f.read()\n\ndef count_vowels(text):\n    total = 0\n    for ch in text.lower():\n        if ch in 'aeiou':\n            total += 1\n    return total\n\ncontent = read_file('sample.txt')\nprint(count_vowels(content))",
+    "optimized": "def count_vowels_in_file(path):\n    with open(path, 'r') as f:\n        return sum(ch in 'aeiou' for ch in f.read().lower())\n\nprint(count_vowels_in_file('sample.txt'))"
+  }
+  {
+    "problem": "Sum of even numbers from user input",
+    "unoptimized": "values = input('Enter numbers separated by space: ').split()\nevens = []\nfor val in values:\n    num = int(val)\n    if num % 2 == 0:\n        evens.append(num)\ntotal = 0\nfor e in evens:\n    total += e\nprint('Sum of evens:', total)",
+    "optimized": "nums = map(int, input('Enter numbers separated by space: ').split())\nprint('Sum of evens:', sum(x for x in nums if x % 2 == 0))"
+  },
+  {
+    "problem": "Check if all strings are uppercase",
+    "unoptimized": "words = ['HELLO', 'WORLD', 'PYTHON']\nall_upper = True\nfor w in words:\n    if not w.isupper():\n        all_upper = False\n        break\nprint(all_upper)",
+    "optimized": "words = ['HELLO', 'WORLD', 'PYTHON']\nprint(all(w.isupper() for w in words))"
+  },
+  {
+    "problem": "Count vowels in a string",
+    "unoptimized": "text = input('Enter text: ')\ncount = 0\nfor ch in text:\n    if ch.lower() in ['a','e','i','o','u']:\n        count += 1\nprint('Vowel count:', count)",
+    "optimized": "txt = input('Enter text: ')\nprint('Vowel count:', sum(1 for ch in txt.lower() if ch in 'aeiou'))"
+  },
+  {
+    "problem": "Multiply all list items",
+    "unoptimized": "data = [2, 3, 4]\nresult = 1\nfor d in data:\n    result = result * d\nprint(result)",
+    "optimized": "import math\nprint(math.prod([2, 3, 4]))"
+  },
+  {
+    "problem": "Remove duplicates from list",
+    "unoptimized": "lst = [1, 2, 2, 3, 4, 4, 5]\nunique_list = []\nfor item in lst:\n    if item not in unique_list:\n        unique_list.append(item)\nprint(unique_list)",
+    "optimized": "lst = [1, 2, 2, 3, 4, 4, 5]\nprint(list(dict.fromkeys(lst)))"
+  },
+  {
+    "problem": "Factorial calculation",
+    "unoptimized": "n = int(input('Enter a number: '))\nfact = 1\nfor i in range(1, n+1):\n    fact = fact * i\nprint('Factorial:', fact)",
+    "optimized": "import math\nn = int(input('Enter a number: '))\nprint('Factorial:', math.factorial(n))"
+  },
+  {
+    "problem": "Filter positive numbers",
+    "unoptimized": "nums = [-2, -1, 0, 1, 2, 3]\npos_list = []\nfor n in nums:\n    if n > 0:\n        pos_list.append(n)\nprint(pos_list)",
+    "optimized": "nums = [-2, -1, 0, 1, 2, 3]\nprint([x for x in nums if x > 0])"
+  },
+  {
+    "problem": "Find intersection of two lists",
+    "unoptimized": "a = [1, 2, 3, 4]\nb = [3, 4, 5, 6]\ncommon = []\nfor x in a:\n    if x in b:\n        common.append(x)\nprint(common)",
+    "optimized": "a = [1, 2, 3, 4]\nb = [3, 4, 5, 6]\nprint(list(set(a) & set(b)))"
+  },
+  {
+    "problem": "Sum of squares up to n",
+    "unoptimized": "n = int(input('Enter n: '))\ntotal = 0\nfor i in range(1, n+1):\n    total += i*i\nprint('Sum of squares:', total)",
+    "optimized": "n = int(input('Enter n: '))\nprint('Sum of squares:', sum(i*i for i in range(1, n+1)))"
+  },
+  {
+    "problem": "Count unique words",
+    "unoptimized": "sentence = 'the quick brown fox jumps over the lazy dog'\nwords = sentence.split()\nunique_count = 0\nseen = []\nfor w in words:\n    if w not in seen:\n        seen.append(w)\n        unique_count += 1\nprint(unique_count)",
+    "optimized": "sentence = 'the quick brown fox jumps over the lazy dog'\nprint(len(set(sentence.split())))"
+  },
+  {
+    "problem": "Check if a number is prime",
+    "unoptimized": "num = int(input('Enter number: '))\nif num <= 1:\n    print(False)\nelse:\n    prime = True\n    for i in range(2, int(num**0.5) + 1):\n        if num % i == 0:\n            prime = False\n            break\n    print(prime)",
+    "optimized": "n = int(input('Enter number: '))\nprint(n > 1 and all(n % i for i in range(2, int(n**0.5) + 1)))"
+  },
+  {
+    "problem": "Reverse words in a sentence",
+    "unoptimized": "sentence = input('Enter sentence: ')\nwords = sentence.split()\nreversed_words = []\nfor w in words:\n    reversed_words.insert(0, w)\nprint(' '.join(reversed_words))",
+    "optimized": "print(' '.join(input('Enter sentence: ').split()[::-1]))"
+  },
+  {
+    "problem": "Sum even indices",
+    "unoptimized": "arr = [10, 20, 30, 40, 50]\ntotal = 0\nfor i in range(len(arr)):\n    if i % 2 == 0:\n        total += arr[i]\nprint(total)",
+    "optimized": "arr = [10, 20, 30, 40, 50]\nprint(sum(arr[::2]))"
+  },
+  {
+    "problem": "Check palindrome",
+    "unoptimized": "text = input('Enter text: ')\nreversed_text = ''\nfor ch in reversed(text):\n    reversed_text += ch\nprint(text == reversed_text)",
+    "optimized": "txt = input('Enter text: ')\nprint(txt == txt[::-1])"
+  },
+  {
+    "problem": "Remove empty strings from list",
+    "unoptimized": "lst = ['a', '', 'b', '', 'c']\nres = []\nfor s in lst:\n    if s != '':\n        res.append(s)\nprint(res)",
+    "optimized": "lst = ['a', '', 'b', '', 'c']\nprint([s for s in lst if s])"
+  },
+  {
+    "problem": "Find longest string",
+    "unoptimized": "names = ['Alice', 'Bob', 'Christina']\nmax_len = 0\nlongest = ''\nfor name in names:\n    if len(name) > max_len:\n        max_len = len(name)\n        longest = name\nprint(longest)",
+    "optimized": "names = ['Alice', 'Bob', 'Christina']\nprint(max(names, key=len))"
+  },
+  {
+    "problem": "Count digits in string",
+    "unoptimized": "text = input('Enter string: ')\ndigit_count = 0\nfor ch in text:\n    if ch.isdigit():\n        digit_count += 1\nprint(digit_count)",
+    "optimized": "txt = input('Enter string: ')\nprint(sum(c.isdigit() for c in txt))"
+  },
+  {
+    "problem": "Square all numbers in list",
+    "unoptimized": "data = [1, 2, 3]\nres = []\nfor x in data:\n    res.append(x*x)\nprint(res)",
+    "optimized": "data = [1, 2, 3]\nprint([x*x for x in data])"
+  },
+  {
+    "problem": "Get last n elements",
+    "unoptimized": "n = 3\nlst = [1, 2, 3, 4, 5]\nresult = []\nfor i in range(len(lst)-n, len(lst)):\n    result.append(lst[i])\nprint(result)",
+    "optimized": "n = 3\nlst = [1, 2, 3, 4, 5]\nprint(lst[-n:])"
+  },
+  {
+    "problem": "Merge two dictionaries",
+    "unoptimized": "a = {'x': 1}\nb = {'y': 2}\nmerged = a.copy()\nfor k, v in b.items():\n    merged[k] = v\nprint(merged)",
+    "optimized": "a = {'x': 1}\nb = {'y': 2}\nprint({**a, **b})"
+  },
+  {
+    "problem": "Sum numbers in nested list",
+    "unoptimized": "nested = [[1, 2], [3, 4], [5]]\ntotal = 0\nfor sub in nested:\n    for num in sub:\n        total += num\nprint(total)",
+    "optimized": "nested = [[1, 2], [3, 4], [5]]\nprint(sum(sum(sub) for sub in nested))"
+  },
+  {
+    "problem": "Find index of element",
+    "unoptimized": "lst = [5, 10, 15]\ntarget = 10\nidx = -1\nfor i in range(len(lst)):\n    if lst[i] == target:\n        idx = i\n        break\nprint(idx)",
+    "optimized": "lst = [5, 10, 15]\nprint(lst.index(10) if 10 in lst else -1)"
+  },
+  {
+    "problem": "Remove negative numbers",
+    "unoptimized": "values = [-1, 2, -3, 4]\npositive_values = []\nfor v in values:\n    if v >= 0:\n        positive_values.append(v)\nprint(positive_values)",
+    "optimized": "values = [-1, 2, -3, 4]\nprint([x for x in values if x >= 0])"
+  },
+  {
+    "problem": "Get all unique characters from string",
+    "unoptimized": "s = 'banana'\nunique_chars = []\nfor ch in s:\n    if ch not in unique_chars:\n        unique_chars.append(ch)\nprint(unique_chars)",
+    "optimized": "s = 'banana'\nprint(list(dict.fromkeys(s)))"
+  }
+
+
+
+
+
+    
 ]
+
+
 
 
